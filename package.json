@@ -1,0 +1,11 @@
+{
+  "name": "sih-26163-security-assessment",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Vercel-friendly synthetic security assessment dashboard",
+  "scripts": {
+    "start": "python3 run_assessment.py",
+    "dev": "python3 run_assessment.py",
+    "build": "echo 'Static Vercel project: no build step required'"
+  }
+}

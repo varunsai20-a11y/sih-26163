@@ -1,0 +1,333 @@
+{
+  "posture": {
+    "postureScore": 18.0,
+    "status": "CRITICAL RISK",
+    "riskLevel": "CRITICAL",
+    "totalFindings": 5,
+    "severityCounts": {
+      "CRITICAL": 1,
+      "HIGH": 2,
+      "MEDIUM": 1,
+      "LOW": 1
+    },
+    "averageRiskScore": 70.8,
+    "maxRiskScore": 89.5
+  },
+  "findings": [
+    {
+      "id": "SEC-001",
+      "title": "Hardcoded Default Secret Key Fallback in JWT Verification",
+      "category": "Authentication",
+      "severity": "CRITICAL",
+      "confidence": 95,
+      "file": "server/auth/jwt.js",
+      "function": "verifyToken",
+      "evidence": "const SECRET = process.env.JWT_SECRET || 'DEFAULT_WORLDMONITOR_SECRET_KEY_2026';",
+      "data_type": "SYNTHETIC / DEMONSTRATION DATA - NOT VERIFIED WORLD MONITOR VULNERABILITIES",
+      "description": "The JWT verification module falls back to a hardcoded string if the environment variable JWT_SECRET is not defined. Attackers can forge administrative tokens using the hardcoded default key.",
+      "remediation": "Remove the hardcoded fallback secret. Ensure server initialization aborts if JWT_SECRET is missing or under 256 bits of entropy.",
+      "relatedFindings": [
+        "SEC-002",
+        "SEC-003",
+        "SEC-004",
+        "SEC-005"
+      ],
+      "cvss": {
+        "version": "4.0",
+        "vector": null,
+        "score": null,
+        "severity": null,
+        "status": "REQUIRES VALIDATION",
+        "missingReason": "Standard CVSS v4.0 metrics require full source verification."
+      },
+      "contextual_risk": {
+        "score": 89.5,
+        "severity_weight": 1.0,
+        "exploitability": 9.0,
+        "exposure": 9.5,
+        "confidence": 95,
+        "component_criticality": 9.5,
+        "attack_path_impact": 8.5
+      },
+      "riskScore": 89.5,
+      "priority": "P1 - Immediate Fix Required",
+      "impact": "Potential risk impact on subsystem associated with Authentication controls."
+    },
+    {
+      "id": "SEC-002",
+      "title": "Missing Role-Based Access Control (RBAC) on Telemetry Export API",
+      "category": "Access Control",
+      "severity": "HIGH",
+      "confidence": 90,
+      "file": "server/routes/telemetry.js",
+      "function": "exportAllTelemetryData",
+      "evidence": "router.get('/api/v1/telemetry/export', authenticateToken, (req, res) => { /* exports full DB dump */ });",
+      "description": "The endpoint checks for a valid authentication token but fails to verify if the authenticated user has administrative privileges, allowing standard users to dump system telemetry.",
+      "remediation": "Attach an authorization middleware (e.g., `requireRole('admin')`) to the route handler before returning data.",
+      "data_type": "SYNTHETIC / DEMONSTRATION DATA - NOT VERIFIED WORLD MONITOR VULNERABILITIES",
+      "relatedFindings": [
+        "SEC-001",
+        "SEC-003",
+        "SEC-004",
+        "SEC-005"
+      ],
+      "cvss": {
+        "version": "4.0",
+        "vector": null,
+        "score": null,
+        "severity": null,
+        "status": "REQUIRES VALIDATION",
+        "missingReason": "Standard CVSS v4.0 metrics require full source verification."
+      },
+      "contextual_risk": {
+        "score": 73.6,
+        "severity_weight": 0.75,
+        "exploitability": 8.5,
+        "exposure": 8.0,
+        "confidence": 90,
+        "component_criticality": 9.0,
+        "attack_path_impact": 8.5
+      },
+      "riskScore": 73.6,
+      "priority": "P2 - High Priority",
+      "impact": "Potential risk impact on subsystem associated with Access Control controls."
+    },
+    {
+      "id": "SEC-003",
+      "title": "Permissive Cross-Origin Resource Sharing (CORS) Wildcard Header",
+      "category": "API Security",
+      "severity": "MEDIUM",
+      "confidence": 100,
+      "file": "server/middleware/cors.js",
+      "function": "configureCors",
+      "evidence": "res.setHeader('Access-Control-Allow-Origin', '*'); res.setHeader('Access-Control-Allow-Credentials', 'true');",
+      "description": "Synthetic permissive CORS example. Browsers reject credentialed responses with a wildcard origin; this combination alone does not prove authenticated cross-origin access.",
+      "remediation": "Restrict Access-Control-Allow-Origin to an explicit whitelist of trusted domains and disallow wildcard origins when credentials are allowed.",
+      "data_type": "SYNTHETIC / DEMONSTRATION DATA - NOT VERIFIED WORLD MONITOR VULNERABILITIES",
+      "relatedFindings": [
+        "SEC-001",
+        "SEC-002",
+        "SEC-004",
+        "SEC-005"
+      ],
+      "cvss": {
+        "version": "4.0",
+        "vector": null,
+        "score": null,
+        "severity": null,
+        "status": "REQUIRES VALIDATION",
+        "missingReason": "Standard CVSS v4.0 metrics require full source verification."
+      },
+      "contextual_risk": {
+        "score": 71.0,
+        "severity_weight": 0.5,
+        "exploitability": 7.0,
+        "exposure": 9.0,
+        "confidence": 100,
+        "component_criticality": 8.0,
+        "attack_path_impact": 8.5
+      },
+      "riskScore": 71.0,
+      "priority": "P2 - High Priority",
+      "impact": "Potential risk impact on subsystem associated with API Security controls."
+    },
+    {
+      "id": "SEC-004",
+      "title": "Verbose Debug Error Messages Leaking Stack Traces to Client",
+      "category": "Data Exposure",
+      "severity": "LOW",
+      "confidence": 85,
+      "file": "server/middleware/errorHandler.js",
+      "function": "globalErrorHandler",
+      "evidence": "res.status(500).json({ error: err.message, stack: err.stack, internalContext: err.config });",
+      "description": "Unhandled server errors leak internal stack traces, system paths, and database query details to HTTP response bodies in production.",
+      "remediation": "Sanitize HTTP 500 error responses in production environments. Log detailed stack traces internally to secure logger instances only.",
+      "data_type": "SYNTHETIC / DEMONSTRATION DATA - NOT VERIFIED WORLD MONITOR VULNERABILITIES",
+      "relatedFindings": [
+        "SEC-001",
+        "SEC-002",
+        "SEC-003",
+        "SEC-005"
+      ],
+      "cvss": {
+        "version": "4.0",
+        "vector": null,
+        "score": null,
+        "severity": null,
+        "status": "REQUIRES VALIDATION",
+        "missingReason": "Standard CVSS v4.0 metrics require full source verification."
+      },
+      "contextual_risk": {
+        "score": 44.2,
+        "severity_weight": 0.25,
+        "exploitability": 5.0,
+        "exposure": 6.5,
+        "confidence": 85,
+        "component_criticality": 7.0,
+        "attack_path_impact": 8.5
+      },
+      "riskScore": 44.2,
+      "priority": "P3 - Standard Remediation",
+      "impact": "Potential risk impact on subsystem associated with Data Exposure controls."
+    },
+    {
+      "id": "SEC-005",
+      "title": "Unbound Dynamic Database Query Parameter in Log Search API",
+      "category": "Input Handling",
+      "severity": "HIGH",
+      "confidence": 88,
+      "file": "server/controllers/logController.js",
+      "function": "searchLogs",
+      "evidence": "const query = { $where: `this.message.includes('${req.query.search}')` };",
+      "description": "Constructing dynamic MongoDB query code directly from user input allows arbitrary JavaScript code execution in the database engine context.",
+      "remediation": "Replace dynamic `$where` evaluation with structured parameter queries or parameterized regular expressions.",
+      "data_type": "SYNTHETIC / DEMONSTRATION DATA - NOT VERIFIED WORLD MONITOR VULNERABILITIES",
+      "relatedFindings": [
+        "SEC-001",
+        "SEC-002",
+        "SEC-003",
+        "SEC-004"
+      ],
+      "cvss": {
+        "version": "4.0",
+        "vector": null,
+        "score": null,
+        "severity": null,
+        "status": "REQUIRES VALIDATION",
+        "missingReason": "Standard CVSS v4.0 metrics require full source verification."
+      },
+      "contextual_risk": {
+        "score": 75.7,
+        "severity_weight": 0.75,
+        "exploitability": 9.5,
+        "exposure": 8.5,
+        "confidence": 88,
+        "component_criticality": 9.5,
+        "attack_path_impact": 8.5
+      },
+      "riskScore": 75.7,
+      "priority": "P1 - Immediate Fix Required",
+      "impact": "Potential risk impact on subsystem associated with Input Handling controls."
+    }
+  ],
+  "validationSummary": {
+    "totalProcessed": 5,
+    "validFindings": 5,
+    "failedChecks": 0,
+    "validationErrors": []
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "SEC-001",
+        "title": "Hardcoded Default Secret Key Fallback in JWT Verification",
+        "category": "Authentication",
+        "severity": "CRITICAL",
+        "riskScore": 89.5,
+        "file": "server/auth/jwt.js"
+      },
+      {
+        "id": "SEC-002",
+        "title": "Missing Role-Based Access Control (RBAC) on Telemetry Export API",
+        "category": "Access Control",
+        "severity": "HIGH",
+        "riskScore": 73.6,
+        "file": "server/routes/telemetry.js"
+      },
+      {
+        "id": "SEC-003",
+        "title": "Permissive Cross-Origin Resource Sharing (CORS) Wildcard Header",
+        "category": "API Security",
+        "severity": "MEDIUM",
+        "riskScore": 71.0,
+        "file": "server/middleware/cors.js"
+      },
+      {
+        "id": "SEC-004",
+        "title": "Verbose Debug Error Messages Leaking Stack Traces to Client",
+        "category": "Data Exposure",
+        "severity": "LOW",
+        "riskScore": 44.2,
+        "file": "server/middleware/errorHandler.js"
+      },
+      {
+        "id": "SEC-005",
+        "title": "Unbound Dynamic Database Query Parameter in Log Search API",
+        "category": "Input Handling",
+        "severity": "HIGH",
+        "riskScore": 75.7,
+        "file": "server/controllers/logController.js"
+      }
+    ],
+    "edges": [
+      {
+        "source": "SEC-001",
+        "target": "SEC-002",
+        "relationship": "Same Subsystem (server) + Auth & Authorization Vulnerability Chain",
+        "strength": 2
+      },
+      {
+        "source": "SEC-001",
+        "target": "SEC-003",
+        "relationship": "Same Subsystem (server)",
+        "strength": 1
+      },
+      {
+        "source": "SEC-001",
+        "target": "SEC-004",
+        "relationship": "Same Subsystem (server)",
+        "strength": 1
+      },
+      {
+        "source": "SEC-001",
+        "target": "SEC-005",
+        "relationship": "Same Subsystem (server) + Auth Bypass & Remote Execution Chain",
+        "strength": 2
+      },
+      {
+        "source": "SEC-002",
+        "target": "SEC-003",
+        "relationship": "Same Subsystem (server)",
+        "strength": 1
+      },
+      {
+        "source": "SEC-002",
+        "target": "SEC-004",
+        "relationship": "Same Subsystem (server) + Access Control Breakdown & Data Leakage",
+        "strength": 2
+      },
+      {
+        "source": "SEC-002",
+        "target": "SEC-005",
+        "relationship": "Same Subsystem (server)",
+        "strength": 1
+      },
+      {
+        "source": "SEC-003",
+        "target": "SEC-004",
+        "relationship": "Same Subsystem (server)",
+        "strength": 1
+      },
+      {
+        "source": "SEC-003",
+        "target": "SEC-005",
+        "relationship": "Same Subsystem (server)",
+        "strength": 1
+      },
+      {
+        "source": "SEC-004",
+        "target": "SEC-005",
+        "relationship": "Same Subsystem (server)",
+        "strength": 1
+      }
+    ],
+    "attackPaths": []
+  },
+  "meta": {
+    "engineStatus": "PRIMARY",
+    "fallbackReason": null,
+    "timestamp": "2026-09-20 19:48:11",
+    "data_type": "SYNTHETIC / DEMONSTRATION DATA - NOT VERIFIED WORLD MONITOR VULNERABILITIES",
+    "durationSeconds": 0.0
+  }
+}

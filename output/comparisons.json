@@ -1,0 +1,11 @@
+{
+  "status": "NO PREVIOUS ASSESSMENT",
+  "message": "Only one assessment snapshot exists. Further runs will enable comparative analysis.",
+  "current_assessment": {
+    "timestamp": "2026-09-20 19:48:11",
+    "posture_score": 18.0,
+    "status": "CRITICAL RISK",
+    "engine_status": "PRIMARY"
+  },
+  "data_type": "SYNTHETIC / DEMONSTRATION DATA - NOT VERIFIED WORLD MONITOR VULNERABILITIES"
+}

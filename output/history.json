@@ -1,0 +1,18 @@
+[
+  {
+    "data_type": "SYNTHETIC / DEMONSTRATION DATA - NOT VERIFIED WORLD MONITOR VULNERABILITIES",
+    "timestamp": "2026-09-20 19:48:11",
+    "postureScore": 18.0,
+    "status": "CRITICAL RISK",
+    "totalFindings": 5,
+    "severityCounts": {
+      "CRITICAL": 1,
+      "HIGH": 2,
+      "MEDIUM": 1,
+      "LOW": 1
+    },
+    "attackPathCount": 0,
+    "engineStatus": "PRIMARY",
+    "durationSeconds": 0.0
+  }
+]

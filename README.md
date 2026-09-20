@@ -2,7 +2,7 @@
 
 This repository contains a local-only synthetic security scoring demo and evidence pack for the SIH-26163 assessment. It is separate from the WorldMonitor application and deployment stack. It does not scan a live system, validate vulnerabilities, or establish a real-world security posture. All five input records are synthetic, and the supplied CVSS values remain unverified.
 
-Run:
+## Local run
 
 ```sh
 python3 run_assessment.py
@@ -14,7 +14,17 @@ Use `--no-server` for CLI output or `--force-fail` to exercise fallback scoring.
 
 Correlations are heuristic relationships based on category and subsystem. They are not proven attack paths. The engine produces no attack paths without validated path evidence. Correlation runs before scoring; fallback risk uses the same posture bands as primary scoring, with engine availability reported separately.
 
-Run the isolated regression suite with:
+## Vercel-friendly deployment
+
+This repository is structured for a static-site deployment on Vercel with serverless API routes under the `api/` directory. The static dashboard is served from the root `index.html` and `frontend/` assets, while the JSON and assessment endpoints are exposed through Vercel serverless handlers.
+
+To deploy:
+
+1. Push this repo to GitHub.
+2. Import the repo into Vercel.
+3. Use the default Vercel settings; no additional build command is required for the static dashboard.
+
+## Regression suite
 
 ```sh
 python3 -m unittest discover -s tests -v
