@@ -11,11 +11,11 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  const outputDir = path.join(__dirname, '..', 'output');
+  const dataDir = path.join(process.cwd(), 'public', 'data');
   const files = ['assessment_results.json', 'comparisons.json', 'history.json'];
 
   for (const file of files) {
-    const full = path.join(outputDir, file);
+    const full = path.join(dataDir, file);
     if (fs.existsSync(full)) {
       fs.unlinkSync(full);
     }

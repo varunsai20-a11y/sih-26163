@@ -1,4 +1,5 @@
-const defaultResults = require('../data/assessment_results.json');
+const fs = require('fs');
+const path = require('path');
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -9,6 +10,10 @@ module.exports = async function handler(req, res) {
     res.status(200).end();
     return;
   }
+
+  const filePath = path.join(process.cwd(), 'public', 'data', 'assessment_results.json');
+  const raw = fs.readFileSync(filePath, 'utf8');
+  const defaultResults = JSON.parse(raw);
 
   const results = {
     ...defaultResults,
